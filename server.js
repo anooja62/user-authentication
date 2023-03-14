@@ -51,16 +51,16 @@ app.post("/reset-password", async (req, res) => {
       const userId = req.user.id;
       const user = await User.findById(userId);
   
-      // Check if the old password is correct
+      
       const isMatch = await bcrypt.compare(req.body.oldPassword, user.password);
       if (!isMatch) {
         return res.status(401).json({ message: "Invalid old password" });
       }
   
-      // Hash the new password
+      
       const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
   
-      // Update the user's password in the database
+      
       user.password = hashedPassword;
       await user.save();
   
@@ -72,21 +72,21 @@ app.post("/reset-password", async (req, res) => {
   });
   app.post("/login", async (req, res) => {
     try {
-      // Find the user by email
+    
       const user = await User.findOne({ email: req.body.email });
   
-      // Check if the user exists
+      
       if (!user) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
   
-      // Check if the password is correct
+      
       const isMatch = await bcrypt.compare(req.body.password, user.password);
       if (!isMatch) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
   
-      // Create a JWT with the user's ID, email, and mobile number as the payload
+      
       const token = jwt.sign(
         { userId: user._id, email: user.email, mobileNumber: user.mobileNumber },
         process.env.JWT_SECRET,

@@ -20,7 +20,7 @@
   "description": "user authentication and management backendapp",
   "main": "server.js",
 
-  "start": "nodemon server.js",
+  "start": "node server.js",
   "devDependencies": {},
   "author": "anooja",
   "license": "ISC"
