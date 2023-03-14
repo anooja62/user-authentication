@@ -23,6 +23,7 @@ app.get("/", async (req, res) => {
 app.post("/signup", async (req, res) => {
   try {
     const publicKey = fs.readFileSync("public_key.pem", "utf-8");
+    console.log(publicKey,"khggg")
     const encryptedEmail = crypto
       .publicEncrypt(publicKey, Buffer.from(req.body.email))
       .toString("base64");
@@ -41,7 +42,7 @@ app.post("/signup", async (req, res) => {
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Something went wrongggg" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 });
 
