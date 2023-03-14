@@ -15,6 +15,17 @@ const secret = crypto.randomBytes(32).toString('hex');
 dotenv.config();
 app.use(express.json());
 app.use(Cors());
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+  modulusLength: 4096,
+  publicKeyEncoding: {
+    type: 'spki',
+    format: 'pem'
+  },
+  privateKeyEncoding: {
+    type: 'pkcs8',
+    format: 'pem'
+  }
+});
 app.get("/", async (req, res) => {
 
     res.status(201).json({ message: "User created successfully" });
@@ -22,8 +33,7 @@ app.get("/", async (req, res) => {
 });
 app.post("/signup", async (req, res) => {
   try {
-    const publicKey = fs.readFileSync("public_key.pem", "utf-8");
-    console.log(publicKey,"khggg")
+   
     const encryptedEmail = crypto
       .publicEncrypt(publicKey, Buffer.from(req.body.email))
       .toString("base64");
@@ -93,9 +103,9 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
-{/*app.put("/user/:id", async (req, res) => {
+app.put("/user/:id", async (req, res) => {
   try {
-    const privateKey = fs.readFileSync("private_key.pem", "utf-8");
+   
     const encryptedEmail = crypto
       .publicEncrypt(publicKey, Buffer.from(req.body.email))
       .toString("base64");
@@ -123,7 +133,7 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
-*/}
+
 app.listen(port, () => {
   console.log(`listening in : ${port}`);
 });
