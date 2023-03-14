@@ -11,6 +11,7 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 const app = express();
 const port = 9000;
+const secret = crypto.randomBytes(32).toString('hex');
 dotenv.config();
 app.use(express.json());
 app.use(Cors());
@@ -34,21 +35,16 @@ app.post("/signup", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    const newUser = new User({
-      email: encryptedEmail,
-      mobileNumber: encryptedMobileNumber,
-      fullName: encryptedFullName,
-      password: hashedPassword,
-    });
-
-    await newUser.save();
+    // Save user data to a file or database
+    fs.appendFileSync('users.txt', `${encryptedEmail},${encryptedMobileNumber},${encryptedFullName},${hashedPassword}\n`);
 
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrongggg" });
   }
 });
+
 
 app.post("/reset-password", async (req, res) => {
   try {
@@ -86,7 +82,7 @@ app.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { userId: user._id, email: user.email, mobileNumber: user.mobileNumber },
-      process.env.JWT_SECRET,
+      secret,
       { expiresIn: "1h" }
     );
 
@@ -96,7 +92,7 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
-app.put("/user/:id", async (req, res) => {
+{/*app.put("/user/:id", async (req, res) => {
   try {
     const privateKey = fs.readFileSync("private_key.pem", "utf-8");
     const encryptedEmail = crypto
@@ -126,7 +122,7 @@ app.put("/user/:id", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
-
+*/}
 app.listen(port, () => {
   console.log(`listening in : ${port}`);
 });
